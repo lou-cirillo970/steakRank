@@ -74,9 +74,9 @@ const Home = () => {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Steak Ranking</h1>
-        
-        <div className={styles.howTo}>
+        <div>
+          <h1 className={styles.title}>Steak Ranking</h1>
+          <div className={styles.howTo}>
           <h2>How to Rank Your Steaks</h2>
           <ol>
             <li>Drag and drop steaks from the "Unranked Steaks" section into your preferred rank (S being the best, D being the lowest).</li>
@@ -110,6 +110,7 @@ const Home = () => {
               </div>
             </div>
           ))}
+        </div>
         </div>
 
         <div className={styles.unrankedSection}>
