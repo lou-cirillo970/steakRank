@@ -76,6 +76,16 @@ const Home = () => {
       <main className={styles.main}>
         <h1 className={styles.title}>Steak Ranking</h1>
         
+        <div className={styles.howTo}>
+          <h2>How to Rank Your Steaks</h2>
+          <ol>
+            <li>Drag and drop steaks from the "Unranked Steaks" section into your preferred rank (S being the best, D being the lowest).</li>
+            <li>You can place multiple steaks in each rank.</li>
+            <li>Rearrange steaks between ranks by dragging them to different tiers.</li>
+            <li>Once you're satisfied with your ranking, click "Generate Top 5 Image" to create a shareable image of your top picks.</li>
+          </ol>
+        </div>
+        
         <div className={styles.rankingSystem}>
           {RANKS.map(rank => (
             <div 
