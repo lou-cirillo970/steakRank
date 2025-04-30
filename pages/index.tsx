@@ -78,56 +78,57 @@ const Home = () => {
         <div className={styles.content}>
           <div>
             <div className={styles.howTo}>
-          <h2>How to Rank Your Steaks</h2>
-          <ol>
-            <li>Drag and drop steaks from the "Unranked Steaks" section into your preferred rank (S being the best, D being the lowest).</li>
-            <li>You can place multiple steaks in each rank.</li>
-            <li>Rearrange steaks between ranks by dragging them to different tiers.</li>
-            <li>Once you're satisfied with your ranking, click "Generate Top 5 Image" to create a shareable image of your top picks.</li>
-          </ol>
-        </div>
-        
-        <div className={styles.rankingSystem}>
-          {RANKS.map(rank => (
-            <div 
-              key={rank}
-              className={styles.rankRow}
-              onDrop={e => handleDrop(e, rank)}
-              onDragOver={handleDragOver}
-            >
-              <h2>{rank}</h2>
-              <div className={styles.steakContainer}>
-                {rankings[rank].map(steak => (
-                  <div
-                    key={steak.name}
-                    draggable
-                    onDragStart={e => handleDragStart(e, steak, rank)}
-                    className={styles.steakItem}
-                  >
-                    <img src={steak.image} alt={steak.name} />
-                    <p>{steak.name}</p>
-                  </div>
-                ))}
-              </div>
+              <h2>How to Rank Your Steaks</h2>
+              <ol>
+                <li>Drag and drop steaks from the "Unranked Steaks" section into your preferred rank (S being the best, D being the lowest).</li>
+                <li>You can place multiple steaks in each rank.</li>
+                <li>Rearrange steaks between ranks by dragging them to different tiers.</li>
+                <li>Once you're satisfied with your ranking, click "Generate Top 5 Image" to create a shareable image of your top picks.</li>
+              </ol>
             </div>
-          ))}
-        </div>
-        </div>
+            
+            <div className={styles.rankingSystem}>
+              {RANKS.map(rank => (
+                <div 
+                  key={rank}
+                  className={styles.rankRow}
+                  onDrop={e => handleDrop(e, rank)}
+                  onDragOver={handleDragOver}
+                >
+                  <h2>{rank}</h2>
+                  <div className={styles.steakContainer}>
+                    {rankings[rank].map(steak => (
+                      <div
+                        key={steak.name}
+                        draggable
+                        onDragStart={e => handleDragStart(e, steak, rank)}
+                        className={styles.steakItem}
+                      >
+                        <img src={steak.image} alt={steak.name} />
+                        <p>{steak.name}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-        <div className={styles.unrankedSection}>
-          <h2>Unranked Steaks</h2>
-          <div className={styles.steakContainer}>
-            {rankings.unranked.map(steak => (
-              <div
-                key={steak.name}
-                draggable
-                onDragStart={e => handleDragStart(e, steak, 'unranked')}
-                className={styles.steakItem}
-              >
-                <img src={steak.image} alt={steak.name} />
-                <p>{steak.name}</p>
-              </div>
-            ))}
+          <div className={styles.unrankedSection}>
+            <h2>Unranked Steaks</h2>
+            <div className={styles.steakContainer}>
+              {rankings.unranked.map(steak => (
+                <div
+                  key={steak.name}
+                  draggable
+                  onDragStart={e => handleDragStart(e, steak, 'unranked')}
+                  className={styles.steakItem}
+                >
+                  <img src={steak.image} alt={steak.name} />
+                  <p>{steak.name}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -135,7 +136,6 @@ const Home = () => {
           className={styles.generateButton}
           onClick={() => {
             const top5 = getTop5();
-            // Here you would generate and download the image
             console.log('Top 5 steaks:', top5);
           }}
         >
