@@ -75,7 +75,7 @@ const Home = () => {
 
       <main className={styles.main}>
         <div>
-          <h1 className={styles.title}>Steak Ranking</h1>
+          <h1 className={styles.title}>SteakFlow</h1>
           <div className={styles.howTo}>
           <h2>How to Rank Your Steaks</h2>
           <ol>
