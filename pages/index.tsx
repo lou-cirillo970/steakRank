@@ -85,23 +85,6 @@ const Home = () => {
             <li>Once you're satisfied with your ranking, click "Generate Top 5 Image" to create a shareable image of your top picks.</li>
           </ol>
         </div>
-
-        <div className={styles.unrankedSection}>
-          <h2>Unranked Steaks</h2>
-          <div className={styles.steakContainer}>
-            {rankings.unranked.map(steak => (
-              <div
-                key={steak.name}
-                draggable
-                onDragStart={e => handleDragStart(e, steak, 'unranked')}
-                className={styles.steakItem}
-              >
-                <img src={steak.image} alt={steak.name} />
-                <p>{steak.name}</p>
-              </div>
-            ))}
-          </div>
-        </div>
         
         <div className={styles.rankingSystem}>
           {RANKS.map(rank => (
