@@ -21,17 +21,19 @@
   padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  color: #000;
 }
 
-.howTo h3{
-  margin-top: 0;
-  color: #1a1a1a;
+.howTo h2,
+.howTo h3,
+.howTo ol,
+.howTo li {
+  color: #000;
 }
-
 
 .howTo p {
-    color: #333;
-    line-height: 1.6;
+  color: #000;
+  line-height: 1.6;
 }
 
 
