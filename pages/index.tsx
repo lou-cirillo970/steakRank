@@ -1,6 +1,7 @@
-
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
+import html2canvas from 'html2canvas';
 import styles from '../styles/Home.module.css';
 
 interface Steak {
@@ -31,6 +32,7 @@ const STEAK_TYPES: Steak[] = [
 const RANKS = ['S', 'A', 'B', 'C', 'D'];
 
 const Home = () => {
+  const rankingRef = useRef<HTMLDivElement>(null);
   const [rankings, setRankings] = useState<{ [key: string]: Steak[] }>({
     S: [],
     A: [],
@@ -51,8 +53,15 @@ const Home = () => {
 
     setRankings(prev => {
       const newRankings = { ...prev };
-      newRankings[fromRank] = prev[fromRank].filter(s => s.name !== steak.name);
-      newRankings[toRank] = [...prev[toRank], steak];
+      
+      // Remove the steak from all ranks first
+      Object.keys(newRankings).forEach(rank => {
+        newRankings[rank] = newRankings[rank].filter(s => s.name !== steak.name);
+      });
+      
+      // Then add it to the new rank
+      newRankings[toRank] = [...newRankings[toRank], steak];
+      
       return newRankings;
     });
   };
@@ -64,6 +73,34 @@ const Home = () => {
   const getTop5 = () => {
     const allRanked = [...rankings.S, ...rankings.A, ...rankings.B, ...rankings.C, ...rankings.D];
     return allRanked.slice(0, 5);
+  };
+
+  const generateImage = async () => {
+    if (!rankingRef.current) return;
+
+    try {
+      const canvas = await html2canvas(rankingRef.current, {
+        backgroundColor: '#1a1f2e',
+        scale: 2, // Higher quality
+      });
+
+      // Convert canvas to blob
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        
+        // Create download link
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'steak-rankings.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    } catch (error) {
+      console.error('Error generating image:', error);
+    }
   };
 
   return (
@@ -80,14 +117,14 @@ const Home = () => {
             <div className={styles.howTo}>
               <h2>How to Rank Your Steaks</h2>
               <ol>
-                <li>Drag and drop steaks from the "Unranked Steaks" section into your preferred rank (S being the best, D being the lowest).</li>
+                <li>Drag and drop steaks from the &quot;Unranked Steaks&quot; section into your preferred rank (S being the best, D being the lowest).</li>
                 <li>You can place multiple steaks in each rank.</li>
                 <li>Rearrange steaks between ranks by dragging them to different tiers.</li>
-                <li>Once you're satisfied with your ranking, click "Generate Top 5 Image" to create a shareable image of your top picks.</li>
+                <li>Once you&apos;re satisfied with your ranking, click &quot;Generate Top 5 Image&quot; to create a shareable image of your top picks.</li>
               </ol>
             </div>
             
-            <div className={styles.rankingSystem}>
+            <div className={styles.rankingSystem} ref={rankingRef}>
               {RANKS.map(rank => (
                 <div 
                   key={rank}
@@ -104,7 +141,13 @@ const Home = () => {
                         onDragStart={e => handleDragStart(e, steak, rank)}
                         className={styles.steakItem}
                       >
-                        <img src={steak.image} alt={steak.name} />
+                        <Image 
+                          src={steak.image} 
+                          alt={steak.name}
+                          width={70}
+                          height={70}
+                          style={{ objectFit: 'cover' }}
+                        />
                         <p>{steak.name}</p>
                       </div>
                     ))}
@@ -124,7 +167,13 @@ const Home = () => {
                   onDragStart={e => handleDragStart(e, steak, 'unranked')}
                   className={styles.steakItem}
                 >
-                  <img src={steak.image} alt={steak.name} />
+                  <Image 
+                    src={steak.image} 
+                    alt={steak.name}
+                    width={70}
+                    height={70}
+                    style={{ objectFit: 'cover' }}
+                  />
                   <p>{steak.name}</p>
                 </div>
               ))}
@@ -134,10 +183,7 @@ const Home = () => {
 
         <button
           className={styles.generateButton}
-          onClick={() => {
-            const top5 = getTop5();
-            console.log('Top 5 steaks:', top5);
-          }}
+          onClick={generateImage}
         >
           Generate Top 5 Image
         </button>
