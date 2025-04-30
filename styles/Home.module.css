@@ -3,10 +3,11 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  background: #fafafa;
+  min-height: 100vh;
 }
 
 .main {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -16,31 +17,48 @@
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 2rem;
+  color: #1a1a1a;
+  font-weight: 700;
+  border-bottom: 3px solid #d4af37;
+  padding-bottom: 1rem;
+  display: inline-block;
+  margin: 0 auto 2rem;
 }
 
 .rankingSystem {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .rankRow {
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  background: #f5f5f5;
-  border-radius: 8px;
-  min-height: 150px;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  min-height: 160px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.rankRow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .rankRow h2 {
-  width: 50px;
+  width: 60px;
+  height: 60px;
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  color: #333;
+  font-size: 2.5rem;
+  color: white;
+  background: #d4af37;
+  border-radius: 50%;
+  font-weight: bold;
 }
 
 .steakContainer {
@@ -48,58 +66,78 @@
   flex-wrap: wrap;
   gap: 1rem;
   flex: 1;
-  padding: 0.5rem;
+  padding: 1rem;
   min-height: 120px;
-  background: white;
-  border-radius: 4px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px dashed #e9ecef;
 }
 
 .steakItem {
-  width: 100px;
+  width: 120px;
   text-align: center;
   cursor: move;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 0.75rem;
+  border: 1px solid #eee;
+  border-radius: 8px;
   background: white;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.steakItem:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .steakItem img {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
 }
 
 .steakItem p {
-  margin: 0.5rem 0 0;
-  font-size: 0.8rem;
+  margin: 0;
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: 500;
 }
 
 .unrankedSection {
-  padding: 1rem;
-  background: #f5f5f5;
-  border-radius: 8px;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .unrankedSection h2 {
-  margin: 0 0 1rem;
+  margin: 0 0 1.5rem;
+  color: #1a1a1a;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .generateButton {
-  padding: 1rem 2rem;
+  padding: 1rem 2.5rem;
   font-size: 1.2rem;
-  background: #0070f3;
+  background: #d4af37;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   align-self: center;
   margin-top: 2rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .generateButton:hover {
-  background: #0051af;
+  background: #c19b2c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 @media (max-width: 768px) {
@@ -110,14 +148,19 @@
   .rankRow {
     flex-direction: column;
     align-items: center;
+    padding: 1rem;
   }
 
   .steakItem {
-    width: 80px;
+    width: 100px;
   }
 
   .steakItem img {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
+  }
+
+  .title {
+    font-size: 2rem;
   }
 }
