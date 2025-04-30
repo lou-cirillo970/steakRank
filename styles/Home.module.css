@@ -3,16 +3,14 @@
   margin: 0 auto;
   background: #1a1f2e;
   min-height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
+  width: 65%;
 }
 
 .main {
   display: grid;
   grid-template-columns: 1fr 300px;
   gap: 1rem;
-  height: calc(100vh - 2rem);
-  overflow: hidden;
+  min-height: calc(100vh - 2rem);
 }
 
 .howTo {
@@ -143,13 +141,24 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  height: 100%;
-  overflow-y: auto;
+  height: fit-content;
+  margin-bottom: 1rem;
 }
 
 .rankingSystem {
   overflow-y: auto;
   padding-right: 1rem;
+  margin-bottom: 1rem;
+}
+
+.steakContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px dashed #e9ecef;
 }
 
 .unrankedSection h2 {
