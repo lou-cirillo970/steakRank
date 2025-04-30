@@ -75,10 +75,15 @@
   justify-content: center;
   font-size: 2.5rem;
   color: white;
-  background: #8b0000; /* Dark red background */
   border-radius: 50%;
   font-weight: bold;
 }
+
+.rankRow:nth-child(1) h2 { background: #FFD700; } /* S - Gold */
+.rankRow:nth-child(2) h2 { background: #C0C0C0; } /* A - Silver */
+.rankRow:nth-child(3) h2 { background: #CD7F32; } /* B - Bronze */
+.rankRow:nth-child(4) h2 { background: #4A90E2; } /* C - Blue */
+.rankRow:nth-child(5) h2 { background: #9B59B6; } /* D - Purple */
 
 .steakContainer {
   display: flex;
