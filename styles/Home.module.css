@@ -3,16 +3,14 @@
   margin: 0 auto;
   background: #1a1f2e;
   min-height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .main {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  height: calc(100vh - 2rem);
-  overflow: hidden;
+  min-height: calc(100vh - 2rem);
 }
 
 .content {
