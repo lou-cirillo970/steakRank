@@ -4,8 +4,11 @@ const nextConfig = {
     unoptimized: true,
   },
   reactStrictMode: true,
-  experimental: {
-    outputFileTracingRoot: undefined,
+  // Enable static exports
+  output: 'export',
+  // Disable image optimization during build
+  images: {
+    unoptimized: true,
   },
   // Disable type checking during build (we do it in development)
   typescript: {
@@ -15,6 +18,8 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Ensure trailing slashes for better static hosting compatibility
+  trailingSlash: true,
 };
 
 module.exports = nextConfig; 
