@@ -4,6 +4,8 @@
   background: #1a1f2e;
   min-height: 100vh;
   overflow-y: auto;
+  max-width: 70%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
 .main {
