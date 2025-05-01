@@ -1,25 +1,33 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    unoptimized: true,
-  },
-  reactStrictMode: true,
   // Enable static exports
-  output: 'export',
-  // Disable image optimization during build
+  output: 'standalone',
+  // Configure images
   images: {
     unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
-  // Disable type checking during build (we do it in development)
+  // Enable React strict mode
+  reactStrictMode: true,
+  // Disable type checking during build
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Disable ESLint during build (we do it in development)
+  // Disable ESLint during build
   eslint: {
     ignoreDuringBuilds: true,
   },
   // Ensure trailing slashes for better static hosting compatibility
   trailingSlash: true,
+  // Configure experimental features
+  experimental: {
+    outputFileTracingRoot: undefined,
+  },
 };
 
 module.exports = nextConfig; 
