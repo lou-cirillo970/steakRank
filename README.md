@@ -1,6 +1,6 @@
 # SteakFlow 🥩
 
-A modern next.js  web application for ranking and comparing different types of steaks in a tier list format. Built with Next.js and React.
+A modern web application for ranking and comparing different types of steaks in a tier list format. Built with Next.js and React.
 
 ## Features
 
