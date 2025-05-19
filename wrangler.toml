@@ -1,15 +1,37 @@
 name = "steakflow"
-compatibility_date = "2024-02-20"
+main = "./.output/worker/index.js"
+compatibility_date = "2024-05-01"
 
+# Configure site assets
 [site]
-bucket = ".open-next/static"
+bucket = "./.output/static"
 
+# Build command
 [build]
 command = "npm run build"
+cwd = "."
 
+# Environment variables
+[vars]
+NODE_ENV = "production"
+
+# Production environment
 [env.production]
 workers_dev = true
+routes = [
+  { pattern = "*", zone_name = "steakflow.com" }
+]
 
-[[routes]]
-pattern = "/*"
-script_name = "worker" 
+# Development environment
+[env.development]
+workers_dev = true
+
+# Triggers
+[triggers]
+crons = []
+
+# Miniflare configuration for local development
+[miniflare]
+kv_persist = true
+cache_persist = true
+durable_objects_persist = true

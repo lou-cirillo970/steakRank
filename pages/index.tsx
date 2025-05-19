@@ -1,8 +1,27 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import html2canvas from 'html2canvas';
 import styles from '../styles/Home.module.css';
+
+// Custom hook for responsive design
+const useMediaQuery = (query: string): boolean => {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+
+    const listener = () => setMatches(media.matches);
+    media.addEventListener('change', listener);
+
+    return () => media.removeEventListener('change', listener);
+  }, [matches, query]);
+
+  return matches;
+};
 
 interface Steak {
   name: string;
@@ -41,53 +60,165 @@ const Home = () => {
     D: [],
     unranked: STEAK_TYPES,
   });
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+
+  // Responsive design hooks
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  // We'll use this for image quality in the html2canvas function
+
+  // Track loaded images for better UX
+  const handleImageLoad = (imagePath: string) => {
+    setLoadedImages(prev => new Set(prev).add(imagePath));
+  };
 
   const handleDragStart = (e: React.DragEvent, steak: Steak, fromRank: string) => {
-    e.dataTransfer.setData('steak', JSON.stringify({ steak, fromRank }));
+    // Store the steak data for the drop handler
+    e.dataTransfer.setData('steak', JSON.stringify({ steak, fromRank: fromRank }));
+
+    // Add visual feedback for drag operation
+    if (e.target instanceof HTMLElement) {
+      e.target.style.opacity = '0.6';
+    }
+
+    // Create a custom drag image - with error handling for Cloudflare Workers
+    try {
+      // Simple approach that works in most browsers
+      e.dataTransfer.effectAllowed = 'move';
+
+      // Only try to create custom drag image in environments that support it
+      if (typeof document !== 'undefined') {
+        const dragPreview = document.createElement('div');
+        dragPreview.style.width = '70px';
+        dragPreview.style.height = '70px';
+        dragPreview.style.backgroundImage = `url(${steak.image})`;
+        dragPreview.style.backgroundSize = 'cover';
+        dragPreview.style.borderRadius = '8px';
+        dragPreview.style.opacity = '0.8';
+        document.body.appendChild(dragPreview);
+
+        e.dataTransfer.setDragImage(dragPreview, 35, 35);
+
+        // Clean up after drag operation
+        setTimeout(() => {
+          document.body.removeChild(dragPreview);
+        }, 0);
+      }
+    } catch (error) {
+      console.log('Custom drag image not supported');
+    }
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    // Reset opacity when drag ends
+    if (e.target instanceof HTMLElement) {
+      e.target.style.opacity = '1';
+    }
   };
 
   const handleDrop = (e: React.DragEvent, toRank: string) => {
     e.preventDefault();
-    const data = JSON.parse(e.dataTransfer.getData('steak'));
-    const { steak, fromRank } = data;
+    if (e.currentTarget) {
+      try {
+        const data = JSON.parse(e.dataTransfer.getData('steak'));
+        // Destructure only what we need, ignoring fromRank
+        const { steak } = data;
 
-    setRankings(prev => {
-      const newRankings = { ...prev };
-      
-      // Remove the steak from all ranks first
-      Object.keys(newRankings).forEach(rank => {
-        newRankings[rank] = newRankings[rank].filter(s => s.name !== steak.name);
-      });
-      
-      // Then add it to the new rank
-      newRankings[toRank] = [...newRankings[toRank], steak];
-      
-      return newRankings;
-    });
+        setRankings(prev => {
+          const newRankings = { ...prev };
+
+          // Remove the steak from all ranks first
+          Object.keys(newRankings).forEach(rank => {
+            newRankings[rank] = newRankings[rank].filter(s => s.name !== steak.name);
+          });
+
+          // Then add it to the new rank
+          newRankings[toRank] = [...newRankings[toRank], steak];
+
+          return newRankings;
+        });
+      } catch (error) {
+        console.error('Error handling drop:', error);
+      }
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    // Allow the drop
+    e.dataTransfer.dropEffect = 'move';
+
+    // Add visual feedback but don't add/remove classes too frequently
+    // This helps with performance on Cloudflare Workers
+    if (e.currentTarget instanceof HTMLElement) {
+      // Use a simple style change instead of class manipulation for better performance
+      const element = e.currentTarget;
+      if (!element.dataset.isDragOver) {
+        element.dataset.isDragOver = 'true';
+        element.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+
+        setTimeout(() => {
+          if (element) {
+            element.style.backgroundColor = '';
+            delete element.dataset.isDragOver;
+          }
+        }, 300);
+      }
+    }
   };
 
-  const getTop5 = () => {
-    const allRanked = [...rankings.S, ...rankings.A, ...rankings.B, ...rankings.C, ...rankings.D];
-    return allRanked.slice(0, 5);
-  };
+  // Add a class to the global CSS for the drop highlight animation
+  useEffect(() => {
+    // Add the CSS class to the document if it doesn't exist
+    if (!document.getElementById('drop-highlight-style')) {
+      const style = document.createElement('style');
+      style.id = 'drop-highlight-style';
+      style.innerHTML = `
+        .drop-highlight {
+          animation: dropHighlight 0.3s ease-out;
+        }
+        @keyframes dropHighlight {
+          0% { box-shadow: 0 0 0 2px #2A6E5A; }
+          50% { box-shadow: 0 0 0 4px #2A6E5A; }
+          100% { box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    return () => {
+      // Clean up the style when component unmounts
+      const styleElement = document.getElementById('drop-highlight-style');
+      if (styleElement) {
+        document.head.removeChild(styleElement);
+      }
+    };
+  }, []);
 
   const generateImage = async () => {
     if (!rankingRef.current) return;
 
+    setIsGenerating(true);
+
     try {
+      // Scroll to top to ensure full capture
+      window.scrollTo(0, 0);
+
+      // Wait a bit for any animations to complete
+      await new Promise(resolve => setTimeout(resolve, 300));
+
       const canvas = await html2canvas(rankingRef.current, {
         backgroundColor: '#1a1f2e',
-        scale: 2, // Higher quality
+        scale: isMobile ? 1.5 : 2, // Adjust quality based on device
+        useCORS: true, // Enable CORS for images
+        allowTaint: true,
+        logging: false,
       });
 
       // Convert canvas to blob
       canvas.toBlob((blob) => {
         if (!blob) return;
-        
+
         // Create download link
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -97,17 +228,23 @@ const Home = () => {
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-      }, 'image/png');
+        setIsGenerating(false);
+      }, 'image/png', 0.9);
     } catch (error) {
       console.error('Error generating image:', error);
+      setIsGenerating(false);
     }
   };
 
   return (
     <div className={styles.container}>
       <Head>
-        <title>Steak Ranking App</title>
-        <meta name="description" content="Rank your favorite steaks" />
+        <title>SteakFlow - Rank Your Favorite Steaks</title>
+        <meta name="description" content="Create your ultimate steak tier list with SteakFlow. Drag and drop to rank your favorite cuts of beef from S-tier to D-tier." />
+        <meta property="og:title" content="SteakFlow - The Ultimate Steak Ranking App" />
+        <meta property="og:description" content="Create and share your personal steak rankings with this interactive tier list maker." />
+        <meta property="og:type" content="website" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className={styles.main}>
@@ -120,13 +257,13 @@ const Home = () => {
                 <li>Drag and drop steaks from the &quot;Unranked Steaks&quot; section into your preferred rank (S being the best, D being the lowest).</li>
                 <li>You can place multiple steaks in each rank.</li>
                 <li>Rearrange steaks between ranks by dragging them to different tiers.</li>
-                <li>Once you&apos;re satisfied with your ranking, click &quot;Generate Top 5 Image&quot; to create a shareable image of your top picks.</li>
+                <li>Once you&apos;re satisfied with your ranking, click &quot;Generate Image&quot; to create a shareable image of your rankings.</li>
               </ol>
             </div>
-            
+
             <div className={styles.rankingSystem} ref={rankingRef}>
               {RANKS.map(rank => (
-                <div 
+                <div
                   key={rank}
                   className={styles.rankRow}
                   onDrop={e => handleDrop(e, rank)}
@@ -139,14 +276,22 @@ const Home = () => {
                         key={steak.name}
                         draggable
                         onDragStart={e => handleDragStart(e, steak, rank)}
+                        onDragEnd={handleDragEnd}
                         className={styles.steakItem}
                       >
-                        <Image 
-                          src={steak.image} 
+                        <Image
+                          src={steak.image}
                           alt={steak.name}
                           width={70}
                           height={70}
-                          style={{ objectFit: 'cover' }}
+                          priority
+                          onLoad={() => handleImageLoad(steak.image)}
+                          style={{
+                            objectFit: 'cover',
+                            opacity: loadedImages.has(steak.image) ? 1 : 0.6,
+                            transition: 'opacity 0.3s ease'
+                          }}
+                          unoptimized // Ensure images work with Cloudflare
                         />
                         <p>{steak.name}</p>
                       </div>
@@ -165,14 +310,22 @@ const Home = () => {
                   key={steak.name}
                   draggable
                   onDragStart={e => handleDragStart(e, steak, 'unranked')}
+                  onDragEnd={handleDragEnd}
                   className={styles.steakItem}
                 >
-                  <Image 
-                    src={steak.image} 
+                  <Image
+                    src={steak.image}
                     alt={steak.name}
                     width={70}
                     height={70}
-                    style={{ objectFit: 'cover' }}
+                    priority={rankings.unranked.indexOf(steak) < 8} // Prioritize loading first 8 images
+                    onLoad={() => handleImageLoad(steak.image)}
+                    style={{
+                      objectFit: 'cover',
+                      opacity: loadedImages.has(steak.image) ? 1 : 0.6,
+                      transition: 'opacity 0.3s ease'
+                    }}
+                    unoptimized // Ensure images work with Cloudflare
                   />
                   <p>{steak.name}</p>
                 </div>
@@ -184,8 +337,9 @@ const Home = () => {
         <button
           className={styles.generateButton}
           onClick={generateImage}
+          disabled={isGenerating}
         >
-          Generate Top 5 Image
+          {isGenerating ? 'Generating...' : 'Generate Image'}
         </button>
       </main>
     </div>

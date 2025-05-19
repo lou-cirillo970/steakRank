@@ -1,18 +1,118 @@
+/* Import modern fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* CSS Variables for consistent theming */
+:root {
+  /* Color palette */
+  --color-primary: #1B4D3E;
+  --color-primary-dark: #143C30;
+  --color-primary-light: #2A6E5A;
+  --color-secondary: #8b0000;
+  --color-secondary-hover: #700000;
+  --color-background: #1a1f2e;
+  --color-text: #ffffff;
+  --color-text-dark: #1a1a1a;
+  --color-card-bg: #ffffff;
+  --color-card-border: #e9ecef;
+  --color-card-shadow: rgba(0, 0, 0, 0.1);
+
+  /* Typography */
+  --font-size-xs: clamp(0.7rem, 0.7vw, 0.8rem);
+  --font-size-sm: clamp(0.8rem, 0.8vw, 0.9rem);
+  --font-size-base: clamp(1rem, 1vw, 1.1rem);
+  --font-size-lg: clamp(1.2rem, 1.5vw, 1.5rem);
+  --font-size-xl: clamp(1.5rem, 2vw, 2rem);
+  --font-size-2xl: clamp(2rem, 2.5vw, 2.5rem);
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Base styles */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  background: #1a1f2e;
-  color: #ffffff;
+  background: var(--color-background);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+a:hover {
+  opacity: 0.8;
 }
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Responsive media queries */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Modern scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
