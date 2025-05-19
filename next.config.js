@@ -13,9 +13,6 @@ const nextConfig = {
   // Ensure trailing slashes are handled correctly
   trailingSlash: true,
 
-  // Enable SWC minification for better performance
-  swcMinify: true,
-
   // Compiler options for better optimization
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',

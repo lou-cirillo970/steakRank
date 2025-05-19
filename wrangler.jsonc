@@ -1,20 +1,17 @@
 {
-  "main": "./.output/worker/index.js",
+  "main": ".open-next/worker.js",
   "name": "steakflow",
-  "compatibility_date": "2024-05-01",
+  "compatibility_date": "2025-03-25",
   "compatibility_flags": [
     "nodejs_compat"
   ],
   "assets": {
-    "directory": "./.output/static",
+    "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
   "build": {
     "command": "npm run build",
     "cwd": "."
-  },
-  "site": {
-    "bucket": "./.output/static"
   },
   "env": {
     "NODE_ENV": "production"
