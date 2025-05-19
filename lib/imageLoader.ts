@@ -8,6 +8,13 @@ export type ImageLoaderProps = {
 };
 
 export default function customImageLoader({ src }: ImageLoaderProps): string {
+  // Handle Webflow URLs - this is the critical fix for the 404 errors
+  if (src.includes('webflow.services') && src.includes('.webp')) {
+    console.log('Intercepted Webflow URL in image loader:', src);
+    const filename = src.split('/').pop();
+    return `/${filename}`;
+  }
+
   // If the src is already an absolute URL, return it as is
   if (src.startsWith('http')) {
     return src;

@@ -19,25 +19,90 @@ function MyApp({ Component, pageProps }: AppProps) {
     // Add global error handler for images
     const handleImageError = (event: Event) => {
       const img = event.target as HTMLImageElement;
-      if (img && img.src && img.src.includes('/steaks/')) {
+
+      // Handle both steak images and Webflow URLs
+      if (img && img.src) {
         console.log('Image failed to load:', img.src);
 
-        // Try a fallback path
+        // Check for Webflow URLs
+        if (img.src.includes('webflow.services')) {
+          const filename = img.src.split('/').pop();
+          if (filename) {
+            const fallbackSrc = `/${filename}`;
+            console.log(`Trying fallback path for Webflow URL: ${fallbackSrc}`);
+            img.src = fallbackSrc;
+            return;
+          }
+        }
+
+        // Check for steak images
+        if (img.src.includes('/steaks/')) {
+          const filename = img.src.split('/').pop();
+          if (filename) {
+            const fallbackSrc = `/${filename}`;
+            console.log(`Trying fallback path for steak image: ${fallbackSrc}`);
+            img.src = fallbackSrc;
+            return;
+          }
+        }
+
+        // For any other image that fails, try to extract the filename and load from root
         const filename = img.src.split('/').pop();
-        if (filename) {
+        if (filename && filename.includes('.')) {
           const fallbackSrc = `/${filename}`;
-          console.log(`Trying fallback path: ${fallbackSrc}`);
+          console.log(`Trying fallback path for generic image: ${fallbackSrc}`);
           img.src = fallbackSrc;
         }
       }
     };
 
-    // Add the global event listener
+    // Add the global event listener for image errors
     window.addEventListener('error', (e) => {
       if (e.target instanceof HTMLImageElement) {
         handleImageError(e);
       }
     }, true);
+
+    // Also intercept all image loading
+    const originalCreateElement = document.createElement;
+    document.createElement = function(tagName: string) {
+      const element = originalCreateElement.call(document, tagName);
+
+      if (tagName.toLowerCase() === 'img') {
+        // Override the src property for images
+        const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+        if (originalSrcDescriptor && originalSrcDescriptor.set) {
+          const originalSrcSetter = originalSrcDescriptor.set;
+
+          Object.defineProperty(element, 'src', {
+            set: function(url) {
+              // Check if the URL contains webflow.services
+              if (url && typeof url === 'string' && url.includes('webflow.services')) {
+                console.log('Intercepted webflow URL in createElement:', url);
+
+                // Extract the filename from the URL
+                const filename = url.split('/').pop();
+
+                // Use a local path instead
+                const newUrl = '/' + filename;
+                console.log('Redirecting to local URL:', newUrl);
+
+                // Call the original setter with the new URL
+                originalSrcSetter.call(this, newUrl);
+              } else {
+                // Call the original setter for other URLs
+                originalSrcSetter.call(this, url);
+              }
+            },
+            get: function() {
+              return originalSrcDescriptor.get.call(this);
+            }
+          });
+        }
+      }
+
+      return element;
+    };
 
     return () => {
       window.removeEventListener('resize', setVh)
