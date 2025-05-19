@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // This is the recommended output mode for Cloudflare Pages
-  output: 'export',
+  // Use 'standalone' output for OpenNext compatibility
+  output: 'standalone',
 
   // Configure images for Cloudflare compatibility
   images: {
