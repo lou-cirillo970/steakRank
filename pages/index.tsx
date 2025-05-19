@@ -297,22 +297,11 @@ const Home = () => {
                           height={70}
                           priority
                           onLoad={() => handleImageLoad(steak.image)}
-                          onError={(e) => {
+                          onError={() => {
                             console.error(`Failed to load image: ${steak.image}`);
 
-                            // Set a fallback background color on error
-                            if (e.target instanceof HTMLImageElement) {
-                              e.target.style.backgroundColor = '#444';
-                              // Try to display the steak name as text fallback
-                              e.target.style.display = 'flex';
-                              e.target.style.alignItems = 'center';
-                              e.target.style.justifyContent = 'center';
-                              e.target.style.color = 'white';
-                              e.target.style.fontSize = '10px';
-                              e.target.style.padding = '5px';
-                              e.target.style.textAlign = 'center';
-                              e.target.setAttribute('alt', steak.name);
-                            }
+                            // Don't do anything here - let the custom image loader handle it
+                            // This prevents the gray background from overriding our colorful SVG placeholders
                           }}
                           style={{
                             objectFit: 'cover',
@@ -350,22 +339,11 @@ const Home = () => {
                     height={70}
                     priority={rankings.unranked.indexOf(steak) < 8} // Prioritize loading first 8 images
                     onLoad={() => handleImageLoad(steak.image)}
-                    onError={(e) => {
+                    onError={() => {
                       console.error(`Failed to load image: ${steak.image}`);
 
-                      // Set a fallback background color on error
-                      if (e.target instanceof HTMLImageElement) {
-                        e.target.style.backgroundColor = '#444';
-                        // Try to display the steak name as text fallback
-                        e.target.style.display = 'flex';
-                        e.target.style.alignItems = 'center';
-                        e.target.style.justifyContent = 'center';
-                        e.target.style.color = 'white';
-                        e.target.style.fontSize = '10px';
-                        e.target.style.padding = '5px';
-                        e.target.style.textAlign = 'center';
-                        e.target.setAttribute('alt', steak.name);
-                      }
+                      // Don't do anything here - let the custom image loader handle it
+                      // This prevents the gray background from overriding our colorful SVG placeholders
                     }}
                     style={{
                       objectFit: 'cover',

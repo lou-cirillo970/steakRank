@@ -34,8 +34,27 @@ function MyApp({ Component, pageProps }: AppProps) {
       if (img && img.src) {
         console.log('Image failed to load:', img.src);
 
-        // For any image that fails, try to load it from the root
+        // Check if this is a steak image
         const filename = img.src.split('/').pop();
+        const isSteak = filename && (
+          filename.includes('steak') ||
+          filename.includes('Ribeye') ||
+          filename.includes('Tbone') ||
+          filename.includes('fillet') ||
+          filename.includes('Fillet') ||
+          filename.includes('beef') ||
+          filename.includes('picanha') ||
+          filename.includes('tomahawk')
+        );
+
+        // For steak images, we don't need to do anything as our custom loader
+        // should already be using the SVG placeholders from the root directory
+        if (isSteak) {
+          console.log('Steak image handled by custom loader');
+          return;
+        }
+
+        // For other images, try a fallback
         if (filename && filename.includes('.')) {
           // Only try this fallback once to avoid loops
           if (!img.dataset.triedFallback) {
