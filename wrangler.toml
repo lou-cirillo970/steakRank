@@ -6,6 +6,8 @@ compatibility_flags = ["nodejs_compat"]
 # Configure site assets
 [site]
 bucket = ".open-next/assets"
+include = ["**/*"]
+exclude = []
 
 # Build command
 [build]

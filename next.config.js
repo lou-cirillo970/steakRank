@@ -16,6 +16,9 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Force images to be loaded from the same domain
+    loader: 'default',
+    path: '',
   },
 
   // Ensure trailing slashes are handled correctly
