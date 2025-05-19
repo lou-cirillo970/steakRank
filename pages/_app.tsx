@@ -2,35 +2,6 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useEffect } from 'react'
-import Image from 'next/image'
-
-// Override the default Next.js Image component to add better error handling
-const OriginalNextImage = Image;
-// @ts-ignore - Overriding the Image component
-Image = function CustomImage(props: any) {
-  const { onError, ...rest } = props;
-
-  const handleError = (e: any) => {
-    console.log('Global image error handler triggered for:', props.src);
-
-    // Try to apply a fallback if the image is from the steaks directory
-    if (typeof props.src === 'string' && props.src.includes('/steaks/')) {
-      const imgElement = e.target as HTMLImageElement;
-      const filename = props.src.split('/').pop();
-      const fallbackSrc = `/${filename}`;
-
-      console.log(`Trying global fallback: ${fallbackSrc}`);
-      imgElement.src = fallbackSrc;
-    }
-
-    // Call the original onError handler if provided
-    if (onError) {
-      onError(e);
-    }
-  };
-
-  return <OriginalNextImage {...rest} onError={handleError} />;
-};
 
 function MyApp({ Component, pageProps }: AppProps) {
   // Handle viewport height for mobile browsers
@@ -46,22 +17,32 @@ function MyApp({ Component, pageProps }: AppProps) {
     window.addEventListener('orientationchange', setVh)
 
     // Add global error handler for images
-    const originalCreateElement = document.createElement.bind(document);
-    document.createElement = function(tagName: string, options?: ElementCreationOptions) {
-      const element = originalCreateElement(tagName, options);
-      if (tagName.toLowerCase() === 'img') {
-        element.addEventListener('error', function(e) {
-          console.log('Global DOM image error handler triggered for:', (e.target as HTMLImageElement).src);
-        });
+    const handleImageError = (event: Event) => {
+      const img = event.target as HTMLImageElement;
+      if (img && img.src && img.src.includes('/steaks/')) {
+        console.log('Image failed to load:', img.src);
+
+        // Try a fallback path
+        const filename = img.src.split('/').pop();
+        if (filename) {
+          const fallbackSrc = `/${filename}`;
+          console.log(`Trying fallback path: ${fallbackSrc}`);
+          img.src = fallbackSrc;
+        }
       }
-      return element;
     };
+
+    // Add the global event listener
+    window.addEventListener('error', (e) => {
+      if (e.target instanceof HTMLImageElement) {
+        handleImageError(e);
+      }
+    }, true);
 
     return () => {
       window.removeEventListener('resize', setVh)
       window.removeEventListener('orientationchange', setVh)
-      // Restore original createElement
-      document.createElement = originalCreateElement;
+      // We can't easily remove the error event listener since it's anonymous
     }
   }, [])
 

@@ -16,9 +16,6 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // Force images to be loaded from the same domain
-    loader: 'default',
-    path: '',
   },
 
   // Ensure trailing slashes are handled correctly
@@ -26,7 +23,9 @@ const nextConfig = {
 
   // Compiler options for better optimization
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn', 'log'],
+    } : false,
   },
 
   // Disable type checking during build
@@ -41,32 +40,6 @@ const nextConfig = {
 
   // Ensure static assets are copied to the output directory
   assetPrefix: '',
-
-  // Explicitly configure public directory handling
-  // This ensures that files in the public directory are correctly copied to the output
-  publicRuntimeConfig: {
-    staticFolder: '/static',
-  },
-
-  // Add webpack configuration to handle image assets
-  webpack: (config, { isServer }) => {
-    // Ensure images are properly handled
-    config.module.rules.push({
-      test: /\.(png|jpe?g|gif|svg|webp)$/i,
-      use: [
-        {
-          loader: 'file-loader',
-          options: {
-            publicPath: '/_next/static/images/',
-            outputPath: `${isServer ? '../' : ''}static/images/`,
-            name: '[name].[hash].[ext]',
-          },
-        },
-      ],
-    });
-
-    return config;
-  },
 }
 
 module.exports = nextConfig

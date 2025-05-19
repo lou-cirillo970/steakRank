@@ -33,16 +33,8 @@ const getImagePath = (path: string): string => {
   // Remove leading slash if present to avoid double slashes
   const cleanPath = path.startsWith('/') ? path.substring(1) : path;
 
-  // Get the base URL dynamically to ensure we're using the correct domain
-  const baseUrl = typeof window !== 'undefined'
-    ? window.location.origin
-    : '';
-
-  // In development, use the path as is
-  // In production (Cloudflare), ensure we're using the correct path format with absolute URLs
-  return process.env.NODE_ENV === 'production'
-    ? `${baseUrl}/${cleanPath}`
-    : `/${cleanPath}`;
+  // Just use a simple path format that works in both environments
+  return `/${cleanPath}`;
 };
 
 const STEAK_TYPES: Steak[] = [
@@ -305,13 +297,6 @@ const Home = () => {
                           onLoad={() => handleImageLoad(steak.image)}
                           onError={(e) => {
                             console.error(`Failed to load image: ${steak.image}`);
-                            // Log more detailed error information
-                            console.log('Image loading error details:', {
-                              src: steak.image,
-                              origin: typeof window !== 'undefined' ? window.location.origin : 'SSR',
-                              pathname: typeof window !== 'undefined' ? window.location.pathname : '',
-                              env: process.env.NODE_ENV
-                            });
 
                             // Set a fallback background color on error
                             if (e.target instanceof HTMLImageElement) {
@@ -325,13 +310,6 @@ const Home = () => {
                               e.target.style.padding = '5px';
                               e.target.style.textAlign = 'center';
                               e.target.setAttribute('alt', steak.name);
-
-                              // Try to load the image directly from the public path as a fallback
-                              const fallbackSrc = `/${steak.image.split('/').pop()}`;
-                              if (e.target.src !== fallbackSrc) {
-                                console.log(`Trying fallback image path: ${fallbackSrc}`);
-                                e.target.src = fallbackSrc;
-                              }
                             }
                           }}
                           style={{
@@ -372,13 +350,6 @@ const Home = () => {
                     onLoad={() => handleImageLoad(steak.image)}
                     onError={(e) => {
                       console.error(`Failed to load image: ${steak.image}`);
-                      // Log more detailed error information
-                      console.log('Image loading error details:', {
-                        src: steak.image,
-                        origin: typeof window !== 'undefined' ? window.location.origin : 'SSR',
-                        pathname: typeof window !== 'undefined' ? window.location.pathname : '',
-                        env: process.env.NODE_ENV
-                      });
 
                       // Set a fallback background color on error
                       if (e.target instanceof HTMLImageElement) {
@@ -392,13 +363,6 @@ const Home = () => {
                         e.target.style.padding = '5px';
                         e.target.style.textAlign = 'center';
                         e.target.setAttribute('alt', steak.name);
-
-                        // Try to load the image directly from the public path as a fallback
-                        const fallbackSrc = `/${steak.image.split('/').pop()}`;
-                        if (e.target.src !== fallbackSrc) {
-                          console.log(`Trying fallback image path: ${fallbackSrc}`);
-                          e.target.src = fallbackSrc;
-                        }
                       }
                     }}
                     style={{
