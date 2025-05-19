@@ -31,6 +31,8 @@ const nextConfig = {
     // Use a custom loader
     loader: 'custom',
     loaderFile: './lib/imageLoader.ts',
+    formats: ['image/webp', 'image/svg+xml'],
+    minimumCacheTTL: 60,
   },
 
   // Ensure trailing slashes are handled correctly

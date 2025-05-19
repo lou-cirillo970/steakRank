@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
 import html2canvas from 'html2canvas';
 import styles from '../styles/Home.module.css';
+import SteakImage from '../components/SteakImage';
 
 // Custom hook for responsive design
 const useMediaQuery = (query: string): boolean => {
@@ -30,9 +30,10 @@ interface Steak {
 
 // Helper function to ensure image paths work in both development and production
 const getImagePath = (path: string): string => {
-  // For steak images, use just the filename
+  // For steak images, always use the root path with the filename
   if (path.includes('steaks/')) {
-    return path.split('/').pop() || path;
+    const filename = path.split('/').pop() || path;
+    return `/${filename}`;
   }
 
   // For other images, use the standard path
@@ -72,15 +73,16 @@ const Home = () => {
     unranked: STEAK_TYPES,
   });
   const [isGenerating, setIsGenerating] = useState(false);
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const [loadedImagesCount, setLoadedImagesCount] = useState(0);
 
   // Responsive design hooks
   const isMobile = useMediaQuery('(max-width: 768px)');
   // We'll use this for image quality in the html2canvas function
 
   // Track loaded images for better UX
-  const handleImageLoad = (imagePath: string) => {
-    setLoadedImages(prev => new Set(prev).add(imagePath));
+  const handleImageLoad = () => {
+    setLoadedImagesCount(prev => prev + 1);
+    console.log(`Loaded images: ${loadedImagesCount + 1}`);
   };
 
   const handleDragStart = (e: React.DragEvent, steak: Steak, fromRank: string) => {
@@ -290,27 +292,13 @@ const Home = () => {
                         onDragEnd={handleDragEnd}
                         className={styles.steakItem}
                       >
-                        <Image
+                        <SteakImage
                           src={steak.image}
                           alt={steak.name}
                           width={70}
                           height={70}
                           priority
-                          onLoad={() => handleImageLoad(steak.image)}
-                          onError={() => {
-                            console.error(`Failed to load image: ${steak.image}`);
-
-                            // Don't do anything here - let the custom image loader handle it
-                            // This prevents the gray background from overriding our colorful SVG placeholders
-                          }}
-                          style={{
-                            objectFit: 'cover',
-                            opacity: loadedImages.has(steak.image) ? 1 : 0.6,
-                            transition: 'opacity 0.3s ease',
-                            backgroundColor: '#333' // Fallback color while loading
-                          }}
-                          unoptimized // Ensure images work with Cloudflare
-                          loading="eager"
+                          onLoad={() => handleImageLoad()}
                         />
                         <p>{steak.name}</p>
                       </div>
@@ -332,27 +320,13 @@ const Home = () => {
                   onDragEnd={handleDragEnd}
                   className={styles.steakItem}
                 >
-                  <Image
+                  <SteakImage
                     src={steak.image}
                     alt={steak.name}
                     width={70}
                     height={70}
                     priority={rankings.unranked.indexOf(steak) < 8} // Prioritize loading first 8 images
-                    onLoad={() => handleImageLoad(steak.image)}
-                    onError={() => {
-                      console.error(`Failed to load image: ${steak.image}`);
-
-                      // Don't do anything here - let the custom image loader handle it
-                      // This prevents the gray background from overriding our colorful SVG placeholders
-                    }}
-                    style={{
-                      objectFit: 'cover',
-                      opacity: loadedImages.has(steak.image) ? 1 : 0.6,
-                      transition: 'opacity 0.3s ease',
-                      backgroundColor: '#333' // Fallback color while loading
-                    }}
-                    unoptimized // Ensure images work with Cloudflare
-                    loading="eager"
+                    onLoad={() => handleImageLoad()}
                   />
                   <p>{steak.name}</p>
                 </div>
