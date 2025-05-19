@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useCallback } from 'react';
 
 interface SteakImageProps {
   src: string;
@@ -111,24 +112,27 @@ const SteakImage = ({ src, alt, width, height, priority = false, onLoad }: Steak
       {/* Show the colored placeholder if there's an error or while loading */}
       {(!loaded || error) && getColoredPlaceholder()}
 
-      <Image
-        src={retryCount > 0 ? `/${filename}` : imagePath}
-        alt={alt}
-        width={width}
-        height={height}
-        priority={priority}
-        onLoad={handleLoad}
-        onError={handleError}
-        style={{
-          objectFit: 'cover',
-          opacity: loaded && !error ? 1 : 0,
-          transition: 'opacity 0.3s ease',
-          position: 'relative',
-          zIndex: loaded && !error ? 2 : 0,
-        }}
-        unoptimized // Ensure images work with Cloudflare
-        loading="eager"
-      />
+      {/* Use Next.js Image component with the colored placeholder as fallback */}
+      <div style={{ display: loaded && !error ? 'block' : 'none' }}>
+        <Image
+          src={retryCount > 0 ? `/${filename}` : imagePath}
+          alt={alt}
+          width={width}
+          height={height}
+          priority={priority}
+          onLoad={handleLoad}
+          onError={handleError}
+          style={{
+            objectFit: 'cover',
+            opacity: 1,
+            transition: 'opacity 0.3s ease',
+            position: 'relative',
+            zIndex: 2,
+          }}
+          unoptimized // Ensure images work with Cloudflare
+          loading="eager"
+        />
+      </div>
     </div>
   );
 };
