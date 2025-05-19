@@ -1,11 +1,11 @@
 name = "steakflow"
-main = "./worker.js"
+main = ".open-next/worker.js"
 compatibility_date = "2025-03-25"
 compatibility_flags = ["nodejs_compat"]
 
 # Configure site assets
 [site]
-bucket = "./out"
+bucket = ".open-next/assets"
 
 # Build command
 [build]
@@ -18,8 +18,10 @@ NODE_ENV = "production"
 
 # Assets binding
 [assets]
-directory = "./out"
+bucket = ".open-next/assets"
 binding = "ASSETS"
+include = ["**/*"]
+exclude = []
 
 # Production environment
 [env.production]

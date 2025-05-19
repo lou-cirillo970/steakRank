@@ -286,12 +286,21 @@ const Home = () => {
                           height={70}
                           priority
                           onLoad={() => handleImageLoad(steak.image)}
+                          onError={(e) => {
+                            console.error(`Failed to load image: ${steak.image}`);
+                            // Set a fallback background color on error
+                            if (e.target instanceof HTMLImageElement) {
+                              e.target.style.backgroundColor = '#444';
+                            }
+                          }}
                           style={{
                             objectFit: 'cover',
                             opacity: loadedImages.has(steak.image) ? 1 : 0.6,
-                            transition: 'opacity 0.3s ease'
+                            transition: 'opacity 0.3s ease',
+                            backgroundColor: '#333' // Fallback color while loading
                           }}
                           unoptimized // Ensure images work with Cloudflare
+                          loading="eager"
                         />
                         <p>{steak.name}</p>
                       </div>
@@ -320,12 +329,21 @@ const Home = () => {
                     height={70}
                     priority={rankings.unranked.indexOf(steak) < 8} // Prioritize loading first 8 images
                     onLoad={() => handleImageLoad(steak.image)}
+                    onError={(e) => {
+                      console.error(`Failed to load image: ${steak.image}`);
+                      // Set a fallback background color on error
+                      if (e.target instanceof HTMLImageElement) {
+                        e.target.style.backgroundColor = '#444';
+                      }
+                    }}
                     style={{
                       objectFit: 'cover',
                       opacity: loadedImages.has(steak.image) ? 1 : 0.6,
-                      transition: 'opacity 0.3s ease'
+                      transition: 'opacity 0.3s ease',
+                      backgroundColor: '#333' // Fallback color while loading
                     }}
                     unoptimized // Ensure images work with Cloudflare
+                    loading="eager"
                   />
                   <p>{steak.name}</p>
                 </div>
