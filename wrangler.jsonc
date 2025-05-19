@@ -6,10 +6,8 @@
     "nodejs_compat"
   ],
   "assets": {
-    "bucket": ".open-next/assets",
-    "binding": "ASSETS",
-    "include": ["**/*"],
-    "exclude": []
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
   },
   "build": {
     "command": "npm run build",

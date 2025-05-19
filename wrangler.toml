@@ -18,10 +18,8 @@ NODE_ENV = "production"
 
 # Assets binding
 [assets]
-bucket = ".open-next/assets"
+directory = ".open-next/assets"
 binding = "ASSETS"
-include = ["**/*"]
-exclude = []
 
 # Production environment
 [env.production]
