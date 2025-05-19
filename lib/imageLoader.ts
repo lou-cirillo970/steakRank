@@ -8,6 +8,16 @@ export type ImageLoaderProps = {
 };
 
 export default function customImageLoader({ src }: ImageLoaderProps): string {
+  // Log all image loading attempts for debugging
+  console.log('Image loader processing:', src);
+
+  // Handle specific Webflow domain we're seeing in the errors
+  if (src.includes('7abb86d3-111a-4c9e-a8b9-f4c1a3a8ff82')) {
+    console.log('Intercepted specific Webflow domain in image loader:', src);
+    const filename = src.split('/').pop();
+    return `/${filename}`;
+  }
+
   // Handle Webflow URLs - this is the critical fix for the 404 errors
   if (src.includes('webflow.services') && src.includes('.webp')) {
     console.log('Intercepted Webflow URL in image loader:', src);
@@ -15,8 +25,14 @@ export default function customImageLoader({ src }: ImageLoaderProps): string {
     return `/${filename}`;
   }
 
-  // If the src is already an absolute URL, return it as is
-  if (src.startsWith('http')) {
+  // If the src is already an absolute URL but not a Webflow URL, check if it's an image
+  if (src.startsWith('http') && !src.includes('webflow.services')) {
+    // If it's an image URL, extract the filename and try to load it locally
+    if (src.match(/\.(webp|jpg|jpeg|png|gif|svg)$/i)) {
+      const filename = src.split('/').pop();
+      console.log('Intercepted external image URL in image loader:', src);
+      return `/${filename}`;
+    }
     return src;
   }
 

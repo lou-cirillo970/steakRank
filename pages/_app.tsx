@@ -16,6 +16,17 @@ function MyApp({ Component, pageProps }: AppProps) {
     window.addEventListener('resize', setVh)
     window.addEventListener('orientationchange', setVh)
 
+    // Register service worker for image URL interception
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    }
+
     // Add global error handler for images
     const handleImageError = (event: Event) => {
       const img = event.target as HTMLImageElement;
