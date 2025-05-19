@@ -30,11 +30,13 @@ interface Steak {
 
 // Helper function to ensure image paths work in both development and production
 const getImagePath = (path: string): string => {
-  // Remove leading slash if present to avoid double slashes
-  const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+  // For steak images, use just the filename
+  if (path.includes('steaks/')) {
+    return path.split('/').pop() || path;
+  }
 
-  // Just use a simple path format that works in both environments
-  return `/${cleanPath}`;
+  // For other images, use the standard path
+  return path;
 };
 
 const STEAK_TYPES: Steak[] = [
