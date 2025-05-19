@@ -1,0 +1,17 @@
+{
+  "name": "steakflow",
+  "type": "pages",
+  "build": {
+    "command": "npm run build",
+    "output_directory": "out",
+    "root_directory": "."
+  },
+  "routes": [
+    {
+      "pattern": "/*",
+      "script": "worker.js"
+    }
+  ],
+  "compatibility_date": "2025-03-25",
+  "compatibility_flags": ["nodejs_compat"]
+}

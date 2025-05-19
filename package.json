@@ -7,13 +7,10 @@
     "build": "next build",
     "start": "next start --port 3000 --hostname 0.0.0.0",
     "lint": "next lint",
-    "preview": "wrangler pages dev .output/static",
-    "deploy": "wrangler deploy",
-    "deploy:pages": "wrangler pages deploy .output/static",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "preview": "wrangler pages dev out",
+    "deploy": "next build && wrangler pages deploy out",
     "cf:dev": "wrangler dev",
-    "cf:build": "next build && wrangler build",
-    "cf:deploy": "next build && wrangler deploy"
+    "cf:deploy": "wrangler deploy"
   },
   "dependencies": {
     "html2canvas": "^1.4.1",
@@ -30,6 +27,6 @@
     "eslint": "^8.56.0",
     "eslint-config-next": "^15.0.0",
     "typescript": "^5.3.3",
-    "wrangler": "^3.28.1"
+    "wrangler": "^4.15.2"
   }
 }

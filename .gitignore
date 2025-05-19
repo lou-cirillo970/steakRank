@@ -88,6 +88,8 @@ web_modules/
 out
 .output
 .open-next
+.wrangler
+.cloudflare
 
 # Nuxt.js build / generate output
 .nuxt
