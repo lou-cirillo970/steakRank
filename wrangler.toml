@@ -20,6 +20,10 @@ NODE_ENV = "production"
 [assets]
 directory = ".open-next/assets"
 binding = "ASSETS"
+include = ["**/*"]
+exclude = []
+bucket_name = "steakflow-assets"
+serve_single_page_app = true
 
 # Production environment
 [env.production]

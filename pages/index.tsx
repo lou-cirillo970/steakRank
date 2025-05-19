@@ -28,24 +28,35 @@ interface Steak {
   image: string;
 }
 
+// Helper function to ensure image paths work in both development and production
+const getImagePath = (path: string): string => {
+  // Remove leading slash if present to avoid double slashes
+  const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+  // In development, use the path as is
+  // In production (Cloudflare), ensure we're using the correct path format
+  return process.env.NODE_ENV === 'production'
+    ? `/${cleanPath}`
+    : `/${cleanPath}`;
+};
+
 const STEAK_TYPES: Steak[] = [
-  { name: 'Ribeye', image: '/steaks/Ribeye.webp' },
-  { name: 'Filet Mignon', image: '/steaks/Fillet_mignon.webp' },
-  { name: 'New York Strip', image: '/steaks/new_york_strip.webp' },
-  { name: 'T-Bone', image: '/steaks/Tbone.webp' },
-  { name: 'Porterhouse', image: '/steaks/porterhouse.webp' },
-  { name: 'Flank Steak', image: '/steaks/flanksteak.webp' },
-  { name: 'Skirt Steak', image: '/steaks/skirt_steak.webp' },
-  { name: 'Top Sirloin', image: '/steaks/top_sirloin.webp' },
-  { name: 'Flat Iron', image: '/steaks/flatiron.webp' },
-  { name: 'Hanger Steak', image: '/steaks/hanger_steak.webp' },
-  { name: 'Tri-Tip', image: '/steaks/tri_tip.webp' },
-  { name: 'Chuck Steak', image: '/steaks/chuck_steak.webp' },
-  { name: 'Tomahawk', image: '/steaks/tomahawk.webp' },
-  { name: 'Denver Steak', image: '/steaks/denver_steak.webp' },
-  { name: 'Picanha', image: '/steaks/picanha.webp' },
-  { name: 'Beef Shanks', image: '/steaks/beef_shank.webp' },
-  { name: 'Brisket', image: '/steaks/brisket.webp' },
+  { name: 'Ribeye', image: getImagePath('steaks/Ribeye.webp') },
+  { name: 'Filet Mignon', image: getImagePath('steaks/Fillet_mignon.webp') },
+  { name: 'New York Strip', image: getImagePath('steaks/new_york_strip.webp') },
+  { name: 'T-Bone', image: getImagePath('steaks/Tbone.webp') },
+  { name: 'Porterhouse', image: getImagePath('steaks/porterhouse.webp') },
+  { name: 'Flank Steak', image: getImagePath('steaks/flanksteak.webp') },
+  { name: 'Skirt Steak', image: getImagePath('steaks/skirt_steak.webp') },
+  { name: 'Top Sirloin', image: getImagePath('steaks/top_sirloin.webp') },
+  { name: 'Flat Iron', image: getImagePath('steaks/flatiron.webp') },
+  { name: 'Hanger Steak', image: getImagePath('steaks/hanger_steak.webp') },
+  { name: 'Tri-Tip', image: getImagePath('steaks/tri_tip.webp') },
+  { name: 'Chuck Steak', image: getImagePath('steaks/chuck_steak.webp') },
+  { name: 'Tomahawk', image: getImagePath('steaks/tomahawk.webp') },
+  { name: 'Denver Steak', image: getImagePath('steaks/denver_steak.webp') },
+  { name: 'Picanha', image: getImagePath('steaks/picanha.webp') },
+  { name: 'Beef Shanks', image: getImagePath('steaks/beef_shank.webp') },
+  { name: 'Brisket', image: getImagePath('steaks/brisket.webp') },
 ];
 
 const RANKS = ['S', 'A', 'B', 'C', 'D'];
@@ -291,6 +302,15 @@ const Home = () => {
                             // Set a fallback background color on error
                             if (e.target instanceof HTMLImageElement) {
                               e.target.style.backgroundColor = '#444';
+                              // Try to display the steak name as text fallback
+                              e.target.style.display = 'flex';
+                              e.target.style.alignItems = 'center';
+                              e.target.style.justifyContent = 'center';
+                              e.target.style.color = 'white';
+                              e.target.style.fontSize = '10px';
+                              e.target.style.padding = '5px';
+                              e.target.style.textAlign = 'center';
+                              e.target.setAttribute('alt', steak.name);
                             }
                           }}
                           style={{
@@ -334,6 +354,15 @@ const Home = () => {
                       // Set a fallback background color on error
                       if (e.target instanceof HTMLImageElement) {
                         e.target.style.backgroundColor = '#444';
+                        // Try to display the steak name as text fallback
+                        e.target.style.display = 'flex';
+                        e.target.style.alignItems = 'center';
+                        e.target.style.justifyContent = 'center';
+                        e.target.style.color = 'white';
+                        e.target.style.fontSize = '10px';
+                        e.target.style.padding = '5px';
+                        e.target.style.textAlign = 'center';
+                        e.target.setAttribute('alt', steak.name);
                       }
                     }}
                     style={{
