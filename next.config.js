@@ -3,6 +3,14 @@ const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
 
+// Run the prepare-for-deployment script before building
+try {
+  console.log('Running prepare-for-deployment script...');
+  require('./scripts/prepare-for-deployment');
+} catch (error) {
+  console.error('Error running prepare-for-deployment script:', error);
+}
+
 const nextConfig = {
   // Use 'standalone' output for OpenNext compatibility
   output: 'standalone',
@@ -70,6 +78,22 @@ const nextConfig = {
           console.log(`Copied ${sourcePath} to ${destPath}`);
         });
       }
+
+      // Also copy all images from the public root to the output directory
+      const publicImages = fs.readdirSync(publicDir).filter(file =>
+        file.match(/\.(webp|jpg|jpeg|png|gif|svg|ico)$/i)
+      );
+
+      publicImages.forEach(image => {
+        const sourcePath = path.join(publicDir, image);
+        const destPath = path.join(outputDir, image);
+
+        // Only copy if it's a file (not a directory)
+        if (fs.statSync(sourcePath).isFile()) {
+          fs.copyFileSync(sourcePath, destPath);
+          console.log(`Copied ${sourcePath} to ${destPath}`);
+        }
+      });
 
       // Copy all files from public directory to the root of the output directory
       const copyFilesRecursively = (sourceDir, targetDir) => {

@@ -13,6 +13,25 @@ export default function customImageLoader({ src }: ImageLoaderProps): string {
 
   // If we have a filename, use it from the root
   if (filename && filename.match(/\.(webp|jpg|jpeg|png|gif|svg|ico)$/i)) {
+    // For steak images, try multiple paths to increase chances of success
+    if (src.includes('steaks/') ||
+        filename.includes('steak') ||
+        filename.includes('Ribeye') ||
+        filename.includes('Tbone') ||
+        filename.includes('fillet') ||
+        filename.includes('Fillet') ||
+        filename.includes('beef') ||
+        filename.includes('picanha') ||
+        filename.includes('tomahawk')) {
+
+      // Log the image path for debugging
+      console.log(`Loading steak image: ${filename}`);
+
+      // Return just the filename to load from root
+      return `/${filename}`;
+    }
+
+    // For other images, also use the root path
     return `/${filename}`;
   }
 

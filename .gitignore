@@ -91,6 +91,9 @@ out
 .wrangler
 .cloudflare
 
+# Copied steak images in root public directory
+public/*.webp
+
 # Nuxt.js build / generate output
 .nuxt
 dist

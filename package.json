@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000 --hostname 0.0.0.0",
-    "build": "next build",
+    "prepare": "node prepare.js",
+    "build": "node prepare.js && next build",
     "postbuild": "node scripts/copy-images.js && node scripts/fix-image-paths.js",
     "start": "next start --port 3000 --hostname 0.0.0.0",
     "lint": "next lint",
-    "preview": "next build && node scripts/copy-images.js && node scripts/fix-image-paths.js && opennextjs-cloudflare preview",
-    "deploy": "next build && node scripts/copy-images.js && node scripts/fix-image-paths.js && opennextjs-cloudflare deploy",
-    "fix-images": "node scripts/fix-image-paths.js",
+    "preview": "node prepare.js && next build && node scripts/copy-images.js && node scripts/fix-image-paths.js && opennextjs-cloudflare preview",
+    "deploy": "node prepare.js && next build && node scripts/copy-images.js && node scripts/fix-image-paths.js && opennextjs-cloudflare deploy",
+    "fix-images": "node scripts/fix-image-paths.js && node scripts/prepare-for-deployment.js",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
