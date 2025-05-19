@@ -30,14 +30,12 @@ interface Steak {
 
 // Helper function to ensure image paths work in both development and production
 const getImagePath = (path: string): string => {
-  // For steak images, always use the root path with the filename
-  if (path.includes('steaks/')) {
-    const filename = path.split('/').pop() || path;
-    return `/${filename}`;
-  }
+  // Extract the filename from the path
+  const filename = path.split('/').pop() || path;
 
-  // For other images, use the standard path
-  return path;
+  // Always use the root path with just the filename
+  // This ensures images work correctly in both development and Cloudflare Workers
+  return `/${filename}`;
 };
 
 const STEAK_TYPES: Steak[] = [

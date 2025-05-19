@@ -8,7 +8,17 @@ export type ImageLoaderProps = {
 };
 
 export default function customImageLoader({ src }: ImageLoaderProps): string {
-  // For any image, just use the filename directly from the root
+  // Check if the URL contains webflow.services and redirect it
+  if (src.includes('webflow.services')) {
+    console.log('Intercepted webflow URL:', src);
+    const filename = src.split('/').pop();
+    if (filename) {
+      console.log('Redirecting to local path:', `/${filename}`);
+      return `/${filename}`;
+    }
+  }
+
+  // For any image, extract the filename
   const filename = src.split('/').pop();
 
   // If we have a filename, use it from the root
@@ -25,9 +35,9 @@ export default function customImageLoader({ src }: ImageLoaderProps): string {
         filename.includes('tomahawk')) {
 
       // Log the image path for debugging
-      console.log(`Loading steak image: ${filename}`);
+      console.log(`Steak image handled by custom loader: ${filename}`);
 
-      // For steak images, always use the root path first
+      // For steak images, always use the root path
       // This ensures we use our colorful SVG placeholders
       return `/${filename}`;
     }
