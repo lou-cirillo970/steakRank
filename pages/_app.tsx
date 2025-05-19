@@ -27,42 +27,33 @@ function MyApp({ Component, pageProps }: AppProps) {
         });
     }
 
-    // Add global error handler for images
+    // Simple image error handler
     const handleImageError = (event: Event) => {
       const img = event.target as HTMLImageElement;
 
-      // Handle both steak images and Webflow URLs
       if (img && img.src) {
         console.log('Image failed to load:', img.src);
 
-        // Check for Webflow URLs
-        if (img.src.includes('webflow.services')) {
-          const filename = img.src.split('/').pop();
-          if (filename) {
-            const fallbackSrc = `/${filename}`;
-            console.log(`Trying fallback path for Webflow URL: ${fallbackSrc}`);
-            img.src = fallbackSrc;
-            return;
-          }
-        }
-
-        // Check for steak images
-        if (img.src.includes('/steaks/')) {
-          const filename = img.src.split('/').pop();
-          if (filename) {
-            const fallbackSrc = `/${filename}`;
-            console.log(`Trying fallback path for steak image: ${fallbackSrc}`);
-            img.src = fallbackSrc;
-            return;
-          }
-        }
-
-        // For any other image that fails, try to extract the filename and load from root
+        // For any image that fails, try to load it from the root
         const filename = img.src.split('/').pop();
         if (filename && filename.includes('.')) {
-          const fallbackSrc = `/${filename}`;
-          console.log(`Trying fallback path for generic image: ${fallbackSrc}`);
-          img.src = fallbackSrc;
+          // Only try this fallback once to avoid loops
+          if (!img.dataset.triedFallback) {
+            img.dataset.triedFallback = 'true';
+            const fallbackSrc = `/${filename}`;
+            console.log(`Trying fallback path: ${fallbackSrc}`);
+            img.src = fallbackSrc;
+          } else {
+            // If we've already tried the fallback, set a background color
+            img.style.backgroundColor = '#444';
+            img.style.display = 'flex';
+            img.style.alignItems = 'center';
+            img.style.justifyContent = 'center';
+            img.style.color = 'white';
+            img.style.fontSize = '10px';
+            img.style.padding = '5px';
+            img.style.textAlign = 'center';
+          }
         }
       }
     };
@@ -73,47 +64,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         handleImageError(e);
       }
     }, true);
-
-    // Also intercept all image loading
-    const originalCreateElement = document.createElement;
-    document.createElement = function(tagName: string) {
-      const element = originalCreateElement.call(document, tagName);
-
-      if (tagName.toLowerCase() === 'img') {
-        // Override the src property for images
-        const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
-        if (originalSrcDescriptor && originalSrcDescriptor.set) {
-          const originalSrcSetter = originalSrcDescriptor.set;
-
-          Object.defineProperty(element, 'src', {
-            set: function(url) {
-              // Check if the URL contains webflow.services
-              if (url && typeof url === 'string' && url.includes('webflow.services')) {
-                console.log('Intercepted webflow URL in createElement:', url);
-
-                // Extract the filename from the URL
-                const filename = url.split('/').pop();
-
-                // Use a local path instead
-                const newUrl = '/' + filename;
-                console.log('Redirecting to local URL:', newUrl);
-
-                // Call the original setter with the new URL
-                originalSrcSetter.call(this, newUrl);
-              } else {
-                // Call the original setter for other URLs
-                originalSrcSetter.call(this, url);
-              }
-            },
-            get: function() {
-              return originalSrcDescriptor.get.call(this);
-            }
-          });
-        }
-      }
-
-      return element;
-    };
 
     return () => {
       window.removeEventListener('resize', setVh)
