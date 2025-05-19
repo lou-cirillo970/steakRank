@@ -27,7 +27,17 @@ export default function customImageLoader({ src }: ImageLoaderProps): string {
       // Log the image path for debugging
       console.log(`Loading steak image: ${filename}`);
 
-      // Return just the filename to load from root
+      // Try multiple paths for steak images
+      // First try the steaks subdirectory
+      if (typeof window !== 'undefined') {
+        const img = new Image();
+        img.src = `/steaks/${filename}`;
+        if (img.complete) {
+          return `/steaks/${filename}`;
+        }
+      }
+
+      // If that fails or we're server-side, return the root path
       return `/${filename}`;
     }
 
