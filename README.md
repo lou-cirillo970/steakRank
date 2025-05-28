@@ -2,7 +2,7 @@
 
 A modern web application for ranking and comparing different types of steaks in a tier list format. Built with Next.js and React.
 
-## Features
+## Features in the app
 
 - **Interactive Tier List**: Drag and drop steaks into S, A, B, C, or D ranks
 - **17 Premium Steak Types**: Including Ribeye, Filet Mignon, New York Strip, and more
